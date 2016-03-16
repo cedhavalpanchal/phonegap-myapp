@@ -27,49 +27,72 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener("deviceready", this.onDeviceReady, false);
-    }
-    ,
+    },
     // deviceready Event Handler
     onDeviceReady: function() {
         $("#signup").click(function() {
-            var fullname = $("#fullname").val();
-            var email = $("#email").val();
-            var password = $("#password").val();
-            var dataString = "fullname=" + fullname + "&email=" + email + "&password=" + password;
-            var url = "http://localhost/phonegap/signup.php";
-            if ($.trim(fullname).length > 0 & $.trim(email).length > 0 & $.trim(password).length > 0)
-            {
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: dataString,
-                    crossDomain: true,
-                    cache: false,
-                    beforeSend: function() {
-                        $("#signup").val('Connecting...');
+            
+            $("#reg_form").validate({
+                rules: {
+                    fullname: {
+                        required: true,
+                        accept: "[a-zA-Z]+"
+                    }, // simple rule, converted to {required:true}
+                    email: {// compound rule
+                        required: true,
+                        email: true
                     },
-                    success: function(data) {
-                        console.log(data);
-                        $("#signup").val('Register');
-                        $("#reg_form").trigger('reset');
-                        if (data == "success")
-                        {
-                            alert("Thank you for Registering with us! you can login now");
+                    password: "required"
+                },
+                messages: {
+                    fullname: {
+                        required: "Please enter a your name.",
+                        accept: "please enter valid name"
+                    },
+                    email: {
+                        required: "please enter your email",
+                        email: "please enter valid email"
+                    },
+                    password: "please enter password"
+                },
+                submitHandler: function() {
+                    var fullname = $("#fullname").val();
+                    var email = $("#email").val();
+                    var password = $("#password").val();
+                    var dataString = "fullname=" + fullname + "&email=" + email + "&password=" + password;
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost/phonegap/signup.php",
+                        data: dataString,
+                        crossDomain: true,
+                        cache: false,
+                        beforeSend: function() {
+                            $("#signup").val('Connecting...');
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            $("#signup").val('Register');
+                            $("#reg_form").trigger('reset');
+                            if (data == "success")
+                            {
+                                alert("Thank you for Registering with us! you can login now");
+                            }
+                            else if (data = "exist")
+                            {
+                                alert("Hey! You alreay has account! you can login with us");
+                            }
+                            else if (data = "failed")
+                            {
+                                alert("Something Went wrong");
+                            }
                         }
-                        else if (data = "exist")
-                        {
-                            alert("Hey! You alreay has account! you can login with us");
-                        }
-                        else if (data = "failed")
-                        {
-                            alert("Something Went wrong");
-                        }
-                    }
-                });
-            }
-            return false;
+                    });
+                }
+            });
         });
     }
 };
+
+
 
 

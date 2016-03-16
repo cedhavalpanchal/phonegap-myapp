@@ -27,43 +27,56 @@ var app = {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener("deviceready", this.onDeviceReady, false);
-    }
-    ,
+    },
     // deviceready Event Handler
     onDeviceReady: function() {
         $("#login").click(function() {
-            var email = $("#email").val();
-            var password = $("#password").val();
-            var dataString = "email=" + email + "&password=" + password;
-            
-            if ($.trim(email).length > 0 & $.trim(password).length > 0)
-            {
-                $.ajax({
-                    type: "POST",
-                    url: "http://localhost/phonegap/login.php",
-                    data: dataString,
-                    crossDomain: true,
-                    cache: false,
-                    beforeSend: function() {
-                        $("#login").html('Connecting...');
+
+            $("#log_form").validate({
+                rules: {
+                    email: {// compound rule
+                        required: true,
+                        email: true
                     },
-                    success: function(data) {
-                        console.log(data);
-                        if (data == "success")
-                        {
-                            localStorage.login = "true";
-                            localStorage.email = email;
-                            window.location.href = "index.html";
+                    password: "required"
+                },
+                messages: {
+                    email: {
+                        required: "please enter your email",
+                        email: "please enter valid email"
+                    },
+                    password: "please enter password"
+                },
+                submitHandler: function() {
+                    var email = $("#email").val();
+                    var password = $("#password").val();
+                    var dataString = "email=" + email + "&password=" + password;
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost/phonegap/login.php",
+                        data: dataString,
+                        crossDomain: true,
+                        cache: false,
+                        beforeSend: function() {
+                            $("#login").html('Connecting...');
+                        },
+                        success: function(data) {
+                            if (data == "success")
+                            {
+                                localStorage.login = "true";
+                                localStorage.email = email;
+                                window.location.href = "index.html";
+                            }
+                            else if (data = "failed")
+                            {
+                                alert("Login error");
+                                $("#login").html('Login');
+                            }
                         }
-                        else if (data = "failed")
-                        {
-                            alert("Login error");
-                            $("#login").html('Login');
-                        }
-                    }
-                });
-            }
-            return false;
+                    });
+                }
+            });
         });
+
     }
 };
