@@ -55,7 +55,7 @@ var app = {
                     },
                     password: "please enter password"
                 },
-                submitHandler: function() {
+                submitHandler: function(form) {
                     var fullname = $("#fullname").val();
                     var email = $("#email").val();
                     var password = $("#password").val();
@@ -87,6 +87,7 @@ var app = {
                             }
                         }
                     });
+                     return false;
                 }
             });
         });

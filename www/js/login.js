@@ -47,7 +47,7 @@ var app = {
                     },
                     password: "please enter password"
                 },
-                submitHandler: function() {
+                submitHandler: function(form) {
                     var email = $("#email").val();
                     var password = $("#password").val();
                     var dataString = "email=" + email + "&password=" + password;
@@ -74,6 +74,7 @@ var app = {
                             }
                         }
                     });
+                     return false;
                 }
             });
         });
